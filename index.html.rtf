@@ -1,0 +1,446 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww28600\viewh15160\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en" class="scroll-smooth">\
+<head>\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+    <title>Dragon Rider Achievement Quest</title>\
+    <script src="https://cdn.tailwindcss.com"></script>\
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\
+    <link rel="preconnect" href="https://fonts.googleapis.com">\
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">\
+    <!-- Chosen Palette: Warm Harmony -->\
+    <!-- Application Structure Plan: A single-page dashboard with a fixed top navigation bar for smooth scrolling to different sections. This structure provides an immediate 'at-a-glance' overview while allowing users to easily jump to detailed sections like the Leaderboard or Store Performance without leaving the page. This is more intuitive for a mobile-first experience than a multi-page app or a long, unstructured scroll. The sections are: Overview (key stats), Leaderboard (comparative rankings), Store Performance (team goal), Weekly Challenges (current objectives), and Rules (reference). This task-oriented grouping makes information easy to find. -->\
+    <!-- Visualization & Content Choices: \
+        - Report Info: Individual Rankings -> Goal: Compare -> Viz: Interactive HTML table with progress bars -> Interaction: Click row for modal -> Justification: Provides a clear ranking and at-a-glance comparison, with a modal for non-cluttered drill-down detail -> Library: HTML/Tailwind, JS for modal, Chart.js for donut chart in modal.\
+        - Report Info: Store-wide Metrics -> Goal: Show Composition/Change -> Viz: Radar Chart -> Interaction: Hover tooltips -> Justification: A radar chart is ideal for showing performance across multiple, distinct categories against a uniform goal, highlighting strengths and weaknesses effectively. -> Library: Chart.js.\
+        - Report Info: Scoring Formulas & Rules -> Goal: Organize/Inform -> Viz: Accordion-style collapsible sections -> Interaction: Click to expand/collapse -> Justification: Keeps detailed, non-critical text hidden by default, reducing clutter and improving scannability. -> Library: JS/Tailwind.\
+        - Report Info: Weekly Challenges -> Goal: Inform -> Viz: Styled Cards -> Interaction: Static Display -> Justification: Cards are a modern, visually appealing way to segment and present discrete blocks of information. -> Library: HTML/Tailwind.\
+    -->\
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->\
+    <style>\
+        body \{ font-family: 'Inter', sans-serif; \}\
+        .chart-container \{ position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; \}\
+        @media (min-width: 768px) \{ .chart-container \{ height: 350px; \} \}\
+        .modal \{ transition: opacity 0.25s ease; \}\
+        .modal-content \{ transition: transform 0.25s ease; \}\
+    </style>\
+</head>\
+<body class="bg-slate-50 text-slate-800">\
+\
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">\
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">\
+            <div class="flex items-center justify-between h-16">\
+                <div class="flex items-center">\
+                    <span class="text-xl font-bold text-slate-900">\uc0\u55357 \u56329  Dragon Rider Quest</span>\
+                </div>\
+                <div class="hidden md:flex md:space-x-8">\
+                    <a href="#overview" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">Overview</a>\
+                    <a href="#leaderboard" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">Leaderboard</a>\
+                    <a href="#store-performance" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">Store Goal</a>\
+                    <a href="#challenges" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">Challenges</a>\
+                    <a href="#rules" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">Rules</a>\
+                </div>\
+                <div class="md:hidden">\
+                    <select id="mobile-nav" class="bg-slate-100 border border-slate-300 rounded-md p-2 text-sm">\
+                        <option value="#overview">Overview</option>\
+                        <option value="#leaderboard">Leaderboard</option>\
+                        <option value="#store-performance">Store Goal</option>\
+                        <option value="#challenges">Challenges</option>\
+                        <option value="#rules">Rules</option>\
+                    </select>\
+                </div>\
+            </div>\
+        </nav>\
+    </header>\
+\
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">\
+\
+        <section id="overview" class="scroll-mt-20">\
+            <div class="text-center mb-8 md:mb-12">\
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900">June 2025 Performance Quest</h1>\
+                <p class="mt-2 text-lg text-slate-600">Track your progress to become the Master Dragon Rider of Berk!</p>\
+            </div>\
+\
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">\
+                <div class="bg-white p-6 rounded-xl shadow-md md:col-span-2">\
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">Store Performance Snapshot</h3>\
+                    <p class="text-sm text-slate-500 mb-2">Overall progress towards the monthly store goal.</p>\
+                    <div class="w-full bg-slate-200 rounded-full h-6">\
+                        <div id="store-progress-bar-overview" class="bg-blue-600 h-6 rounded-full text-center text-white text-sm leading-6 transition-all duration-500"></div>\
+                    </div>\
+                    <div class="text-right text-sm font-medium text-slate-700 mt-2" id="store-progress-text-overview"></div>\
+                </div>\
+\
+                <div class="bg-white p-6 rounded-xl shadow-md">\
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">Top Riders</h3>\
+                    <ul id="top-riders-list" class="space-y-3">\
+                    </ul>\
+                </div>\
+            </div>\
+        </section>\
+\
+        <div class="my-12 md:my-16 border-t border-slate-200"></div>\
+\
+        <section id="leaderboard" class="scroll-mt-20">\
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Rider Leaderboard</h2>\
+            <p class="text-slate-600 mb-6">See how all dragon riders are performing. Click on a rider to see their detailed performance breakdown.</p>\
+            <div class="bg-white rounded-xl shadow-md overflow-x-auto">\
+                <table class="w-full text-sm text-left text-slate-500">\
+                    <thead class="text-xs text-slate-700 uppercase bg-slate-100">\
+                        <tr>\
+                            <th scope="col" class="px-6 py-3">Rank</th>\
+                            <th scope="col" class="px-6 py-3">Rider</th>\
+                            <th scope="col" class="px-6 py-3">Dragon</th>\
+                            <th scope="col" class="px-6 py-3 w-1/3">Progress</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody id="leaderboard-body">\
+                    </tbody>\
+                </table>\
+            </div>\
+        </section>\
+\
+        <div class="my-12 md:my-16 border-t border-slate-200"></div>\
+        \
+        <section id="store-performance" class="scroll-mt-20">\
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Store Goal Breakdown</h2>\
+            <p class="text-slate-600 mb-6">This section shows our collective progress towards the overall store goal and a breakdown of each contributing metric. The goal is to expand the colored area to the outer ring!</p>\
+            <div class="bg-white p-6 rounded-xl shadow-md">\
+                <div class="chart-container">\
+                    <canvas id="store-metrics-chart"></canvas>\
+                </div>\
+            </div>\
+        </section>\
+\
+        <div class="my-12 md:my-16 border-t border-slate-200"></div>\
+\
+        <section id="challenges" class="scroll-mt-20">\
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Weekly Challenges & Rewards</h2>\
+            <p class="text-slate-600 mb-6">Complete these weekly objectives for bonus rewards and glory!</p>\
+            <div id="challenges-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">\
+            </div>\
+        </section>\
+\
+        <div class="my-12 md:my-16 border-t border-slate-200"></div>\
+\
+        <section id="rules" class="scroll-mt-20">\
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Game Rules & Scoring</h2>\
+            <p class="text-slate-600 mb-6">Need a refresher? Here's how the game works.</p>\
+            <div class="space-y-4" id="accordion-container">\
+            </div>\
+        </section>\
+    </main>\
+    \
+    <div id="individual-modal" class="modal fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4 opacity-0 pointer-events-none">\
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 transform scale-95">\
+            <div class="flex justify-between items-start">\
+                <div>\
+                    <h3 id="modal-rider-name" class="text-xl font-bold text-slate-900"></h3>\
+                    <p id="modal-dragon-name" class="text-sm text-slate-500"></p>\
+                </div>\
+                <button id="close-modal-btn" class="text-slate-500 hover:text-slate-800">&times;</button>\
+            </div>\
+            <div class="mt-4">\
+                <p class="text-slate-600 mb-4 text-sm">This chart shows the weighted contribution of each metric to this rider's total daily score.</p>\
+                <div class="chart-container !h-64 md:!h-72">\
+                    <canvas id="individual-metrics-chart"></canvas>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+\
+    <script>\
+    document.addEventListener('DOMContentLoaded', () => \{\
+        \
+        const MOCK_DATA = \{\
+            teamMembers: [\
+                \{ id: 1, name: 'Alex Ray', dragon: 'Toothless', position: 28, scores: \{ bookings: 1.1, orders: 0.95, aapas: 1.0, aov: 0.98, upt: 1.2, contacts: 0.85 \} \},\
+                \{ id: 2, name: 'Maria Garcia', dragon: 'Stormfly', position: 25, scores: \{ bookings: 0.9, orders: 1.1, aapas: 0.92, aov: 1.05, upt: 1.0, contacts: 0.95 \} \},\
+                \{ id: 3, name: 'David Chen', dragon: 'Hookfang', position: 22, scores: \{ bookings: 0.85, orders: 0.80, aapas: 1.1, aov: 0.90, upt: 0.95, contacts: 1.1 \} \},\
+                \{ id: 4, name: 'Priya Patel', dragon: 'Meatlug', position: 18, scores: \{ bookings: 0.75, orders: 0.90, aapas: 0.80, aov: 0.85, upt: 0.70, contacts: 1.0 \} \},\
+                \{ id: 5, name: 'Jordan Smith', dragon: 'Barf & Belch', position: 15, scores: \{ bookings: 0.60, orders: 0.70, aapas: 0.75, aov: 0.65, upt: 0.80, contacts: 0.75 \} \},\
+            ],\
+            storePerformance: \{\
+                position: 21,\
+                scores: \{ aapas: 0.95, bookings: 0.88, orders: 1.05, contacts: 0.85, progMix: 0.92 \}\
+            \},\
+            weeklyChallenges: [\
+                \{ week: 1, title: 'Dragon Hatching', reward: 'Fire badges + 2 bonus spaces', status: 'Completed' \},\
+                \{ week: 2, title: 'Flight Training', reward: 'Hiccup & Toothless advance 3 spaces + team pizza party', status: 'Active' \},\
+                \{ week: 3, title: 'Dragon Racing', reward: 'Top 3 performers get choice of preferred schedule next month', status: 'Upcoming' \},\
+                \{ week: 4, title: 'Alpha Dragon', reward: '"Chief of Berk" title + special parking spot', status: 'Upcoming' \},\
+            ],\
+            rules: [\
+                \{ \
+                    title: 'Individual Rider Scoring', \
+                    content: 'Your daily score is a weighted average: 25% Bookings Targets, 20% Orders Targets, 15% AAPAS, 15% AOV, 15% UPT, and 10% Contacts.' \
+                \},\
+                \{ \
+                    title: 'Store Performance Scoring', \
+                    content: 'The overall store score is calculated as: 25% AAPAS, 25% Bookings $, 20% Orders, 15% Contacts, and 15% Prog Mix.' \
+                \},\
+                \{ \
+                    title: 'Daily Movement Rules', \
+                    content: '<strong>Individual:</strong> 100%+ of daily target: Move 3 spaces. 75-99%: Move 2 spaces. 50-74%: Move 1 space. Below 50%: Stay put. <br><strong>Store:</strong> 100%+ of daily target: Move 2 spaces. 75-99%: Move 1 space. 50-74%: Stay put. Below 50%: Move 1 space back.'\
+                \}\
+            ],\
+            gameConfig: \{\
+                totalDays: 30\
+            \}\
+        \};\
+\
+        const calculateIndividualScore = (scores) => \{\
+            return (scores.bookings * 0.25) + (scores.orders * 0.20) + (scores.aapas * 0.15) + (scores.aov * 0.15) + (scores.upt * 0.15) + (scores.contacts * 0.10);\
+        \};\
+        \
+        MOCK_DATA.teamMembers.forEach(member => \{\
+            member.totalScore = calculateIndividualScore(member.scores);\
+        \});\
+        MOCK_DATA.teamMembers.sort((a, b) => b.position - a.position);\
+\
+        function renderOverview() \{\
+            const storeProgress = (MOCK_DATA.storePerformance.position / MOCK_DATA.gameConfig.totalDays) * 100;\
+            document.getElementById('store-progress-bar-overview').style.width = `$\{storeProgress\}%`;\
+            document.getElementById('store-progress-bar-overview').innerText = `$\{Math.round(storeProgress)\}%`;\
+            document.getElementById('store-progress-text-overview').innerText = `$\{MOCK_DATA.storePerformance.position\} / $\{MOCK_DATA.gameConfig.totalDays\} Days`;\
+\
+            const topRidersList = document.getElementById('top-riders-list');\
+            topRidersList.innerHTML = '';\
+            MOCK_DATA.teamMembers.slice(0, 3).forEach((rider, index) => \{\
+                const li = document.createElement('li');\
+                li.className = 'flex items-center justify-between text-sm';\
+                li.innerHTML = `\
+                    <div class="flex items-center">\
+                        <span class="font-bold text-slate-600 mr-3">$\{index + 1\}.</span>\
+                        <div>\
+                            <p class="font-medium text-slate-800">$\{rider.name\}</p>\
+                            <p class="text-xs text-slate-500">$\{rider.dragon\}</p>\
+                        </div>\
+                    </div>\
+                    <span class="font-semibold text-blue-600">$\{rider.position\} spaces</span>\
+                `;\
+                topRidersList.appendChild(li);\
+            \});\
+        \}\
+\
+        function renderLeaderboard() \{\
+            const leaderboardBody = document.getElementById('leaderboard-body');\
+            leaderboardBody.innerHTML = '';\
+            MOCK_DATA.teamMembers.forEach((rider, index) => \{\
+                const progress = (rider.position / MOCK_DATA.gameConfig.totalDays) * 100;\
+                const row = document.createElement('tr');\
+                row.className = 'bg-white border-b hover:bg-slate-50 cursor-pointer';\
+                row.dataset.riderId = rider.id;\
+                row.innerHTML = `\
+                    <td class="px-6 py-4 font-bold text-lg text-slate-800">$\{index + 1\}</td>\
+                    <td class="px-6 py-4 font-medium text-slate-900">$\{rider.name\}</td>\
+                    <td class="px-6 py-4">$\{rider.dragon\}</td>\
+                    <td class="px-6 py-4">\
+                        <div class="w-full bg-slate-200 rounded-full h-4">\
+                            <div class="bg-amber-500 h-4 rounded-full" style="width: $\{progress\}%"></div>\
+                        </div>\
+                        <div class="text-xs text-right mt-1">$\{rider.position\}/$\{MOCK_DATA.gameConfig.totalDays\}</div>\
+                    </td>\
+                `;\
+                leaderboardBody.appendChild(row);\
+            \});\
+        \}\
+\
+        let storeChartInstance = null;\
+        function renderStorePerformanceChart() \{\
+            const ctx = document.getElementById('store-metrics-chart').getContext('2d');\
+            if (storeChartInstance) \{\
+                storeChartInstance.destroy();\
+            \}\
+            storeChartInstance = new Chart(ctx, \{\
+                type: 'radar',\
+                data: \{\
+                    labels: ['AAPAS', 'Bookings $', 'Orders', 'Contacts', 'Prog Mix'],\
+                    datasets: [\{\
+                        label: 'Store Performance',\
+                        data: Object.values(MOCK_DATA.storePerformance.scores).map(s => s * 100),\
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',\
+                        borderColor: 'rgba(59, 130, 246, 1)',\
+                        borderWidth: 2,\
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',\
+                        pointBorderColor: '#fff',\
+                        pointHoverBackgroundColor: '#fff',\
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'\
+                    \}]\
+                \},\
+                options: \{\
+                    responsive: true,\
+                    maintainAspectRatio: false,\
+                    scales: \{\
+                        r: \{\
+                            angleLines: \{ color: 'rgba(0,0,0,0.1)' \},\
+                            grid: \{ color: 'rgba(0,0,0,0.1)' \},\
+                            pointLabels: \{ font: \{ size: 12 \} \},\
+                            suggestedMin: 0,\
+                            suggestedMax: 100,\
+                            ticks: \{ backdropColor: 'rgba(255,255,255,0.75)', stepSize: 25 \}\
+                        \}\
+                    \},\
+                    plugins: \{\
+                        legend: \{ display: false \},\
+                        tooltip: \{\
+                            callbacks: \{\
+                                label: function(context) \{\
+                                    return `$\{context.label\}: $\{context.raw.toFixed(1)\}% of goal`;\
+                                \}\
+                            \}\
+                        \}\
+                    \}\
+                \}\
+            \});\
+        \}\
+        \
+        function renderChallenges() \{\
+            const container = document.getElementById('challenges-container');\
+            container.innerHTML = '';\
+            MOCK_DATA.weeklyChallenges.forEach(challenge => \{\
+                const statusClasses = \{\
+                    'Completed': 'bg-green-100 text-green-800',\
+                    'Active': 'bg-blue-100 text-blue-800',\
+                    'Upcoming': 'bg-slate-100 text-slate-800'\
+                \};\
+                const card = document.createElement('div');\
+                card.className = `p-5 rounded-xl $\{challenge.status === 'Active' ? 'shadow-lg ring-2 ring-blue-500' : 'shadow-md'\} bg-white`;\
+                card.innerHTML = `\
+                    <div class="flex justify-between items-center mb-2">\
+                        <h4 class="font-bold text-slate-900">$\{challenge.title\}</h4>\
+                        <span class="text-xs font-medium px-2 py-1 rounded-full $\{statusClasses[challenge.status]\}">$\{challenge.status\}</span>\
+                    </div>\
+                    <p class="text-sm text-slate-600"><strong>Reward:</strong> $\{challenge.reward\}</p>\
+                `;\
+                container.appendChild(card);\
+            \});\
+        \}\
+        \
+        function renderRules() \{\
+            const container = document.getElementById('accordion-container');\
+            container.innerHTML = '';\
+            MOCK_DATA.rules.forEach((rule, index) => \{\
+                const accordionItem = document.createElement('div');\
+                accordionItem.className = 'bg-white rounded-xl shadow-md';\
+                accordionItem.innerHTML = `\
+                    <h2>\
+                        <button type="button" class="accordion-button flex items-center justify-between w-full p-5 font-medium text-left text-slate-800" data-accordion-target="accordion-body-$\{index\}">\
+                            <span>$\{rule.title\}</span>\
+                            <svg class="accordion-arrow w-3 h-3 rotate-0 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/></svg>\
+                        </button>\
+                    </h2>\
+                    <div id="accordion-body-$\{index\}" class="hidden p-5 border-t border-slate-200">\
+                        <p class="text-slate-600">$\{rule.content\}</p>\
+                    </div>\
+                `;\
+                container.appendChild(accordionItem);\
+            \});\
+        \}\
+\
+        let individualChartInstance = null;\
+        function openModal(riderId) \{\
+            const rider = MOCK_DATA.teamMembers.find(r => r.id === parseInt(riderId));\
+            if (!rider) return;\
+\
+            document.getElementById('modal-rider-name').innerText = rider.name;\
+            document.getElementById('modal-dragon-name').innerText = `Riding $\{rider.dragon\}`;\
+            \
+            const modal = document.getElementById('individual-modal');\
+            modal.classList.remove('opacity-0', 'pointer-events-none');\
+            modal.querySelector('.modal-content').classList.remove('scale-95');\
+\
+            const ctx = document.getElementById('individual-metrics-chart').getContext('2d');\
+            if(individualChartInstance) \{\
+                individualChartInstance.destroy();\
+            \}\
+\
+            individualChartInstance = new Chart(ctx, \{\
+                type: 'doughnut',\
+                data: \{\
+                    labels: ['Bookings', 'Orders', 'AAPAS', 'AOV', 'UPT', 'Contacts'],\
+                    datasets: [\{\
+                        data: [\
+                            rider.scores.bookings * 25,\
+                            rider.scores.orders * 20,\
+                            rider.scores.aapas * 15,\
+                            rider.scores.aov * 15,\
+                            rider.scores.upt * 15,\
+                            rider.scores.contacts * 10,\
+                        ],\
+                        backgroundColor: ['#3B82F6', '#60A5FA', '#93C5FD', '#F59E0B', '#FBBF24', '#FCD34D'],\
+                        borderColor: '#fff',\
+                        borderWidth: 2,\
+                    \}]\
+                \},\
+                options: \{\
+                    responsive: true,\
+                    maintainAspectRatio: false,\
+                    plugins: \{\
+                        legend: \{ position: 'bottom' \},\
+                        tooltip: \{\
+                            callbacks: \{\
+                                label: function(context) \{\
+                                    return ` $\{context.label\}: Contributes $\{context.raw.toFixed(1)\} points`;\
+                                \}\
+                            \}\
+                        \}\
+                    \}\
+                \}\
+            \});\
+        \}\
+\
+        function closeModal() \{\
+            const modal = document.getElementById('individual-modal');\
+            modal.classList.add('opacity-0', 'pointer-events-none');\
+            modal.querySelector('.modal-content').classList.add('scale-95');\
+        \}\
+\
+        document.getElementById('leaderboard-body').addEventListener('click', (e) => \{\
+            const row = e.target.closest('tr');\
+            if (row && row.dataset.riderId) \{\
+                openModal(row.dataset.riderId);\
+            \}\
+        \});\
+        \
+        document.getElementById('accordion-container').addEventListener('click', e => \{\
+            const button = e.target.closest('.accordion-button');\
+            if(!button) return;\
+\
+            const targetId = button.dataset.accordionTarget;\
+            const body = document.getElementById(targetId);\
+            const arrow = button.querySelector('.accordion-arrow');\
+\
+            body.classList.toggle('hidden');\
+            arrow.classList.toggle('rotate-180');\
+        \});\
+\
+        document.getElementById('close-modal-btn').addEventListener('click', closeModal);\
+        document.getElementById('individual-modal').addEventListener('click', (e) => \{\
+            if (e.target.id === 'individual-modal') \{\
+                closeModal();\
+            \}\
+        \});\
+\
+        document.getElementById('mobile-nav').addEventListener('change', function() \{\
+            window.location.href = this.value;\
+        \});\
+\
+        renderOverview();\
+        renderLeaderboard();\
+        renderStorePerformanceChart();\
+        renderChallenges();\
+        renderRules();\
+    \});\
+    </script>\
+</body>\
+</html>\
+}
